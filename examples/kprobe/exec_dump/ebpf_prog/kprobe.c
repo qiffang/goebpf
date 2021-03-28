@@ -161,25 +161,27 @@ int kprobe__tcp_sendmsg(struct pt_regs *ctx, struct sock *sk,
 	/*获取网络协议的套接字类型*/
     u16 family = sk->__sk_common.skc_family;
 	/*判断是否是IPv4*/
-    if (family == AF_INET) {
+
+	buf_t *buf = get_buf();
+    if (buf == NULL) {
+      return 0;
+    }
+    event_t e = {0};
+    e.pid = pid;
+    bpf_get_current_comm(&e.comm, sizeof(e.comm));
+    buf_write(buf, (void *)&e, sizeof(e));
+//        buf_strcat(buf, (void *)args[0]);
+//        buf_strcat_argv(buf, (void *)args[1]);
+    buf_perf_output(ctx);
+//    if (family == AF_INET) {
     	/*将当前进程的pid放入ipv4_key结构体中
     	  作为ipv4_send_bytes哈希表的关键字*/
 
-        buf_t *buf = get_buf();
-        if (buf == NULL) {
-          return 0;
-        }
-    	event_t e = {0};
-    	e.pid = pid;
-    	bpf_get_current_comm(&e.comm, sizeof(e.comm));
-    	buf_write(buf, (void *)&e, sizeof(e));
-//        buf_strcat(buf, (void *)args[0]);
-//        buf_strcat_argv(buf, (void *)args[1]);
-        buf_perf_output(ctx);
+
 //        struct ipv4_key_t ipv4_key = {.pid = pid};
         /*将size的值作为哈希表的值进行累加*/
 //        ipv4_send_bytes.increment(ipv4_key, size);
-    }
+//    }
     return 0;
 }
 
