@@ -2,6 +2,8 @@
 // Full license can be found in the LICENSE file.
 
 #include "bpf_helpers.h"
+#include <uapi/linux/ptrace.h>
+#include <net/sock.h>
 
 #define BUFSIZE_PADDED (2 << 13)
 #define BUFSIZE ((BUFSIZE_PADDED - 1) >> 1)
@@ -163,6 +165,11 @@ int kprobe__tcp_sendmsg(struct pt_regs *ctx, struct sock *sk,
     if (family == AF_INET) {
     	/*将当前进程的pid放入ipv4_key结构体中
     	  作为ipv4_send_bytes哈希表的关键字*/
+
+        buf_t *buf = get_buf();
+        if (buf == NULL) {
+          return 0;
+        }
     	event_t e = {0};
     	e.pid = pid;
     	bpf_get_current_comm(&e.comm, sizeof(e.comm));
