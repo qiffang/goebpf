@@ -942,8 +942,8 @@ struct sock_common {
 
 struct sock {
   struct sock_common __sk_common;
-  #define sk_dport		__sk_common.skc_dport
-  #define sk_num			__sk_common.skc_num
+  #define sk_dport		__sk_common.skc_dport;
+  #define sk_num			__sk_common.skc_num;
 };
 
 
