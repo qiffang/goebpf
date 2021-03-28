@@ -1,7 +1,6 @@
 // Copyright (c) 2020 Dropbox, Inc.
 // Full license can be found in the LICENSE file.
 
-
 #define BUFSIZE_PADDED (2 << 13)
 #define BUFSIZE ((BUFSIZE_PADDED - 1) >> 1)
 #define MAX_ARGLEN 256
