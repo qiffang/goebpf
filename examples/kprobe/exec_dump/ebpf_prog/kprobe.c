@@ -152,11 +152,11 @@ int kprobe__tcp_sendmsg(struct pt_regs *ctx, struct sock *sk,
     struct msghdr *msg, size_t size)
 {
     /*获取当前进程的pid*/
-    u32 pid = bpf_get_current_pid_tgid() >> 32;
+    __u32 pid = bpf_get_current_pid_tgid() >> 32;
     /*此部分在python里处理，用于替换特定功能的c语句*/
 //    FILTER_PID
 	/*获取网络协议的套接字类型*/
-    u16 family = sk->__sk_common.skc_family;
+    __u16 family = sk->__sk_common.skc_family;
 	/*判断是否是IPv4*/
 
 	buf_t *buf = get_buf();

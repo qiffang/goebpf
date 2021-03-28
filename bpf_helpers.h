@@ -938,3 +938,10 @@ static_assert(sizeof(__u64) == 8, "wrong_u64_size");
 struct sock {
   struct sock_common __sk_common;
 };
+
+struct sock_common {
+   unsigned short      skc_family;
+}
+typedef /*implementation-defined*/ size_t;
+
+struct msghdr {}
