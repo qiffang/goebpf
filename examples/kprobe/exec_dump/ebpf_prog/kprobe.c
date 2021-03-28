@@ -2,7 +2,6 @@
 // Full license can be found in the LICENSE file.
 
 #include "bpf_helpers.h"
-#include <uapi/linux/ptrace.h>
 #include <net/sock.h>
 
 #define BUFSIZE_PADDED (2 << 13)
