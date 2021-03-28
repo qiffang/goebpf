@@ -938,6 +938,13 @@ struct sock_common {
    unsigned short      skc_family;
    __be32          skc_daddr;
    __be32          skc_rcv_saddr;
+   union {
+   		__portpair	skc_portpair;
+   		struct {
+   			__be16	skc_dport;
+   			__u16	skc_num;
+   		};
+   	};
 };
 
 struct sock {
