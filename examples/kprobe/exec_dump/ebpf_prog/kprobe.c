@@ -150,8 +150,7 @@ static inline int buf_strcat_argv(buf_t *buf, void **ptr) {
 //}
 
 SEC("kprobe/tcp_sendmsg")
-int kprobe__tcp_sendmsg(struct pt_regs *ctx, struct sock *sk,
-    struct msghdr *msg, size_t size)
+int kprobe__tcp_sendmsg(struct pt_regs *ctx, struct sock *sk, struct msghdr *msg, size_t size)
 {
     /*获取当前进程的pid*/
     __u32 pid = bpf_get_current_pid_tgid() >> 32;

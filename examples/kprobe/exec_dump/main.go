@@ -80,6 +80,7 @@ func LoadProgram(filename string) (*Program, error) {
 
 	// load programs
 	for _, prog := range bpf.GetPrograms() {
+		fmt.Println("name=" + prog.GetName())
 		if err := prog.Load(); err != nil {
 			return nil, err
 		}
