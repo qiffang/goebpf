@@ -16,8 +16,12 @@ typedef unsigned long args_t;
 typedef struct event {
   __u64 ktime_ns;
   __u32 pid;
-  __u32 uid;
-  __u32 gid;
+  __u32 saddr;
+  __u32 daddr;
+  __u16 sport;
+  __u16 dport;
+//  __u32 uid;
+//  __u32 gid;
   __s32 type;
   char comm[TASK_COMM_LEN];
 } event_t;
@@ -167,6 +171,13 @@ int tcp_sendmsg(struct pt_regs *ctx, struct sock *sk, struct msghdr *msg, size_t
     event_t e = {0};
     e.pid = pid;
     bpf_get_current_comm(&e.comm, sizeof(e.comm));
+
+    ipv4_key.saddr = sk->__sk_common.skc_rcv_saddr;
+    ipv4_key.daddr = sk->__sk_common.skc_daddr;
+    ipv4_key.sport = sk->__sk_common.skc_num;
+    u16 dport = sk->__sk_common.skc_dport;
+
+
     buf_write(buf, (void *)&e, sizeof(e));
 //        buf_strcat(buf, (void *)args[0]);
 //        buf_strcat_argv(buf, (void *)args[1]);
