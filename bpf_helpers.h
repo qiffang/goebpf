@@ -936,10 +936,14 @@ static_assert(sizeof(__u64) == 8, "wrong_u64_size");
 
 struct sock_common {
    unsigned short      skc_family;
+   __be32          skc_daddr;
+   __be32          skc_rcv_saddr;
 };
 
 struct sock {
   struct sock_common __sk_common;
+  #define sk_dport		__sk_common.skc_dport
+  #define sk_num			__sk_common.skc_num
 };
 
 
