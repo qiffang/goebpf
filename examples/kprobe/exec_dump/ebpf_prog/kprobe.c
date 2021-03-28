@@ -124,29 +124,59 @@ static inline int buf_strcat_argv(buf_t *buf, void **ptr) {
   return 0;
 }
 
-SEC("kprobe/guess_execve")
-int execve_entry(struct pt_regs *ctx) {
-  buf_t *buf = get_buf();
-  if (buf == NULL) {
+//SEC("kprobe/guess_execve")
+//int execve_entry(struct pt_regs *ctx) {
+//  buf_t *buf = get_buf();
+//  if (buf == NULL) {
+//    return 0;
+//  }
+//
+//  args_t args[NARGS] = {};
+//  get_args(ctx, args);
+//
+//  event_t e = {0};
+//  e.ktime_ns = bpf_ktime_get_ns();
+//  e.pid = bpf_get_current_pid_tgid() >> 32;
+//  e.uid = bpf_get_current_uid_gid() >> 32;
+//  e.gid = bpf_get_current_uid_gid();
+//  bpf_get_current_comm(&e.comm, sizeof(e.comm));
+//
+//  buf_write(buf, (void *)&e, sizeof(e));
+//  buf_strcat(buf, (void *)args[0]);
+//  buf_strcat_argv(buf, (void *)args[1]);
+//  buf_perf_output(ctx);
+//
+//  return 0;
+//}
+
+SEC("kprobe/tcp_sendmsg")
+int kprobe__tcp_sendmsg(struct pt_regs *ctx, struct sock *sk,
+    struct msghdr *msg, size_t size)
+{
+    /*获取当前进程的pid*/
+    u32 pid = bpf_get_current_pid_tgid() >> 32;
+    /*此部分在python里处理，用于替换特定功能的c语句*/
+//    FILTER_PID
+	/*获取网络协议的套接字类型*/
+    u16 family = sk->__sk_common.skc_family;
+	/*判断是否是IPv4*/
+    if (family == AF_INET) {
+    	/*将当前进程的pid放入ipv4_key结构体中
+    	  作为ipv4_send_bytes哈希表的关键字*/
+    	event_t e = {0};
+    	e.pid = pid;
+    	bpf_get_current_comm(&e.comm, sizeof(e.comm));
+    	buf_write(buf, (void *)&e, sizeof(e));
+//        buf_strcat(buf, (void *)args[0]);
+//        buf_strcat_argv(buf, (void *)args[1]);
+        buf_perf_output(ctx);
+//        struct ipv4_key_t ipv4_key = {.pid = pid};
+        /*将size的值作为哈希表的值进行累加*/
+//        ipv4_send_bytes.increment(ipv4_key, size);
+    }
     return 0;
-  }
-
-  args_t args[NARGS] = {};
-  get_args(ctx, args);
-
-  event_t e = {0};
-  e.ktime_ns = bpf_ktime_get_ns();
-  e.pid = bpf_get_current_pid_tgid() >> 32;
-  e.uid = bpf_get_current_uid_gid() >> 32;
-  e.gid = bpf_get_current_uid_gid();
-  bpf_get_current_comm(&e.comm, sizeof(e.comm));
-
-  buf_write(buf, (void *)&e, sizeof(e));
-  buf_strcat(buf, (void *)args[0]);
-  buf_strcat_argv(buf, (void *)args[1]);
-  buf_perf_output(ctx);
-
-  return 0;
 }
+
+
 
 char _license[] SEC("license") = "GPL";
