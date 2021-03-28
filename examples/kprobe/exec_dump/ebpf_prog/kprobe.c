@@ -1,8 +1,6 @@
 // Copyright (c) 2020 Dropbox, Inc.
 // Full license can be found in the LICENSE file.
 
-#include "bpf_helpers.h"
-#include <net/sock.h>
 
 #define BUFSIZE_PADDED (2 << 13)
 #define BUFSIZE ((BUFSIZE_PADDED - 1) >> 1)
