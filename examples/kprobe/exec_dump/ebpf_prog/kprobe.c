@@ -172,10 +172,10 @@ int tcp_sendmsg(struct pt_regs *ctx, struct sock *sk, struct msghdr *msg, size_t
     e.pid = pid;
     bpf_get_current_comm(&e.comm, sizeof(e.comm));
 
-    e.saddr = sk->__sk_common.skc_rcv_saddr;
-    e.daddr = sk->__sk_common.skc_daddr;
-    e.sport = sk->__sk_common.skc_num;
-    e.dport = sk->__sk_common.skc_dport;
+//    e.saddr = sk->__sk_common.skc_rcv_saddr;
+//    e.daddr = sk->__sk_common.skc_daddr;
+//    e.sport = sk->__sk_common.skc_num;
+//    e.dport = sk->__sk_common.skc_dport;
 
 
     buf_write(buf, (void *)&e, sizeof(e));
