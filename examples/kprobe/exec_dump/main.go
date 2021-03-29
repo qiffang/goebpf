@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"os/signal"
 	"strings"
@@ -25,9 +26,13 @@ var (
 type Event_t struct {
 	KtimeNs uint64
 	Pid     uint32
-	Uid     uint32
-	Gid     uint32
-	Type    int32
+	SAddr     net.IP    // Local IP address
+	DAddr     net.IP    // Remote IP address
+	SPort     uint16    // Local TCP port
+	DPort     uint16    // Remote TCP port
+	//Uid     uint32
+	//Gid     uint32
+	//Type    int32
 	Comm    [32]byte
 }
 
@@ -132,7 +137,7 @@ func (p *Program) startPerfEvents(events <-chan []byte) {
 				fmt.Printf("%s  %-16s  %-6d %-6d %-6d %s\n",
 					ts.Format("15:04:05.000"),
 					goebpf.NullTerminatedStringToString(ev.Comm[:]),
-					ev.Pid, ev.Uid, ev.Gid, desc)
+					ev.Pid, ev.DAddr, ev.SAddr, desc)
 
 			} else {
 				break

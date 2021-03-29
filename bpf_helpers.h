@@ -934,19 +934,20 @@ static_assert(sizeof(__u64) == 8, "wrong_u64_size");
 
 #endif
 
-typedef __u32 __bitwise __portpair;
+//typedef __u32 __bitwise __portpair;
 
 struct sock_common {
    unsigned short      skc_family;
    __be32          skc_daddr;
    __be32          skc_rcv_saddr;
-   union {
-   		__portpair	skc_portpair;
-   		struct {
-   			__be16	skc_dport;
-   			__u16	skc_num;
-   		};
-   	};
+   __be16	skc_dport;
+   __u16	skc_num;
+//   union {
+//   		__portpair	skc_portpair;
+//   		struct {
+//
+//   		};
+//   	};
 };
 
 struct sock {
